@@ -14,10 +14,10 @@ void setup(){
 
 void loop(){
 
-  myservo.write(0);    // サーボモーターを0度の位置まで動かす
+  myservo.write(70);    // サーボモーターを0度の位置まで動かす
   delay(1000);
 
-  myservo.write(90);   // サーボモーターを90度の位置まで動かす
+  myservo.write(0);   // サーボモーターを90度の位置まで動かす
   delay(1000);
   exit(0);
 }
