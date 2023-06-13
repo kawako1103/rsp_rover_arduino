@@ -1,7 +1,7 @@
 #include <Servo.h>      // Servoライブラリの読み込み
 
 Servo myservo;          // Servoオブジェクトの宣言
-const int SV_PIN = 7;   // サーボモーターをデジタルピン7に
+const int SV_PIN = 9;   // サーボモーターをデジタルピン9に
 
 void setup(){
 

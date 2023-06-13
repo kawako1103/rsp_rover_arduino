@@ -29,11 +29,11 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial mySerial(10, 11); // RX, TX
+SoftwareSerial mySerial(3, 2); // RX, TX
 
 void setup() {
   // Open serial communications and wait for port to open:
-  Serial.begin(57600);
+  Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
