@@ -29,7 +29,7 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial mySerial(3, 2); // RX, TX
+SoftwareSerial mySerial(2, 3); // RX, TX
 
 void setup() {
   // Open serial communications and wait for port to open:

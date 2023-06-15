@@ -2,7 +2,7 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial mySerial(10, 11); // RX, TX
+SoftwareSerial mySerial(2, 3); // RX, TX
 
 float longitude;
 float latitude;
