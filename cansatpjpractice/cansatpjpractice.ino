@@ -4,10 +4,12 @@
 #include <SD.h>
 #include <SPI.h>
 #include <String.h>
+#include "motor.h"
 
 
 #define landing_threshold 9.0　 //加速度の絶対値
 #define heght_threshold   2000  //高さの絶対値
+#define land_heght 20 //高さの絶対値//
 
 //SPI for SD　(SDに関しては、Arduino標準ライブラリがあった)
 #define SS      10
@@ -31,10 +33,101 @@ void setup(){
     Serial.println("Card Mount Failed");
     return;
   }
+
+  //落下検知フェーズ//3段階
+   while(true){
+
+    //SDカード書き込み
+    String data_1 = String(get_acclx()) + "," + String(get_accly()) + "," + String(get_acclz()) + "\n";//文字列を
+    file = SD.open("Accl.csv", FILE_WRITE);
+    if(file){
+      file.println(data_1);
+    }
+    file.close();
+
+
+    String data_2 = String(get_long()) + "," + String(get_lati()) + "," + String(get_alt()) + "\n";//文字列を
+    file = SD.open("GPS.csv", FILE_WRITE);
+    if(file){
+      file.println(data_2);
+    }
+    file.close();
+
+    //SDカード書き込み
+
+    
+   float A = get_accl_abs();
+   float B = get_alt();
+   if ((A > landing_threshold) && (get_alt() < heght_threshold)){
+    delay(10);
+    continue;
+   }else { 
+    break;
+   }
+   }//landing_thresholdが関与する条件は振動
+   //heght_thresholdが関与する条件は高度　振動をしながら高度2000を超えたらbreakする
+
+   //これで上空に行ったことを検知できる。
+   
+   //次は着地 条件はものすごい加速度を検知し、かつ標高が10 m以下になったこと
+   while(true){
+   float A = get_accl_abs();
+   float B = get_alt();
+   if ((A > landing_threshold) && (B< land_heght)){
+    delay(10);
+    continue;
+   }else { 
+    break;
+   }
+   }
+
+   //上のフェーズを超えて　次に加速度が安定したことを検知する　これで着地判定
+
+   while(true){
+
+       //SDカード書き込み
+    String data_1 = String(get_acclx()) + "," + String(get_accly()) + "," + String(get_acclz()) + "\n";//文字列を
+    file = SD.open("Accl.csv", FILE_WRITE);
+    if(file){
+      file.println(data_1);
+    }
+    file.close();
+
+
+    String data_2 = String(get_long()) + "," + String(get_lati()) + "," + String(get_alt()) + "\n";//文字列を
+    file = SD.open("GPS.csv", FILE_WRITE);
+    if(file){
+      file.println(data_2);
+    }
+    file.close();
+
+    //SDカード書き込み
+   
+   float A = get_accl_abs();
+   float B = get_alt();
+   if (((A > 8) && (A < 10)) && (B< land_heght)){
+    delay(10);
+    continue;
+   }else { 
+    break;
+   }
+   }
+
+  //サーボ
+  servo_setup();//servo_return()が逆
+  servo_move();
+  
+  //キャリブ　値渡しの実装要
+    // put your setup code here, to run once:
+//  motor_setup()；
+//  DC_Manipulator("LEFT", 1000, 45, 150);//
+  calibration();//値渡し実装必要
+  
+    
   
 }
 
-void loop(){
+void loop(){//キャリブ、走行決定、走行をここに入れるべきか　終了判定も忘れずに(距離が1 m以内とか)
 
   //とりあえずシリアルモニタで確認できるコード
   Serial.println(get_accl_abs(),6);
@@ -67,6 +160,7 @@ void loop(){
       file.println(data_2);
     }
     file.close();
+    
 }
 
 
